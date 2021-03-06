@@ -3,15 +3,16 @@ function plotGraficos(t,y)
     yCard=y(:,2)*0;
     xPen=xCard+0.5*sin(y(:,1));
     yPen=0.5*cos(y(:,1));
-    
     figure
+    subplot(2,1,1);
     plot(t,y(:,1))
-    figure
+    title('Posicao angular')
+    
+    subplot(2,1,2); 
     plot(t,y(:,2))
-    figure
-    plot(xPen,yPen);
-    figure
-    plot(xCard,yCard);
+    title('Posicao do carinho')
+    grid on 
+    %{
     figure
     i=1;
     for t=0:0.1:30
@@ -19,9 +20,10 @@ function plotGraficos(t,y)
         hold on 
         plot(xCard(i),yCard(i), '-s', 'MarkerSize', 10);
         hold off
-        xlim([-1,1])
+        xlim([-500,1])
         ylim([-0.1,0.8])
         anim(i)=getframe();
         i=i+1;
     end
+%}
 end

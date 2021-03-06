@@ -15,10 +15,6 @@ C=[ 1, 0, 0, 0;
     0, 0, 1, 0]
 
 D=0
-X0=[0;
-    0;
-    0;
-    0];
 
 E2=gerarMatrizControbilidade(A,B)
 controlavel(E2)
@@ -33,7 +29,62 @@ Ac=A-B*K
 closeLoop=ss(Ac,B,C,0);
 dt=0.1;
 t = 0:dt:30;  % 201 points
+
 u = (t>0);
+X0=[0;
+    0;
+    0;
+    0];
+[yOut,tOut]=lsim(closeLoop,u,t,X0);
+plotGraficos(tOut, yOut)
+
+u = (t>0);
+X0 = [0.1;
+      0;
+      1;
+      0];
 
 [yOut,tOut]=lsim(closeLoop,u,t,X0);
 plotGraficos(tOut, yOut)
+
+t = 0:dt:90;  % 201 points
+u = (t>0)-(t>45);
+X0 = [0;
+      0;
+      0;
+      0];
+
+[yOut,tOut]=lsim(closeLoop,u,t,X0);
+plotGraficos(tOut, yOut)
+
+C=[1,0,0,0];
+rank(obsv(A,C))
+
+C=[0,0,1,0];
+rank(obsv(A,C))
+
+rootsObserver=K*4
+
+inversaMatrizObservabilidade=[inv(obsv(A,C))]
+sizeM=size(obsv(A,C))
+sizeM=sizeM(1)
+q=[inversaMatrizObservabilidade(:,sizeM)]
+
+T=[q,A*q,A^2*q,A^3*q]
+
+AObservador=inv(T)*A*T
+BObservador=inv(T)*B
+CObservador=C*T
+
+polyObserver=poly(rootsObserver)
+polyObserver=flip(polyObserver)
+aux=size(polyObserver)
+polyObserver=polyObserver(1:aux(2)-1)
+polyObserver=transpose(polyObserver)
+clear aux;
+aux=size(obsv(A,C))
+lObservador=polyObserver+AObservador(:,aux(1))
+
+L=T*lObservador
+eig(A-L*C)
+ctrb(A',C')
