@@ -17,7 +17,13 @@ C=[ 1, 0, 0, 0;
 D=0
 
 E2=gerarMatrizControbilidade(A,B)
-controlavel(E2)
+
+if isFullRank(E2)
+    disp('Matriz é controlavel')
+else
+    disp('Matriz nao é controlavel')
+end
+
 T=gerarMatrizDeTransposcaoCanonicaControladora(E2,A)
 [Ac,Bc,Cc]=aplicarTranformacaodeSimiliraridade(A,B,C,T)
 
@@ -26,7 +32,7 @@ R=1
 K=lqr(A,B,Q,R)
 [P,L,K]=care(A,B,Q,R)
 Ac=A-B*K
-closeLoop=ss(Ac,B,C,0);
+closeLoop=ss(A-B*K,B,C,0);
 dt=0.1;
 t = 0:dt:30;  % 201 points
 
