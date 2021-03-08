@@ -1,6 +1,6 @@
 close all;
 clear all;
-
+%1,2
 A=[ 0       , 1, 0, 0;
     16.0976 , 0, 0, 0;
     0       , 0, 0, 1;
@@ -61,7 +61,7 @@ X0 = [0;
 
 [yOut,tOut]=lsim(closeLoop,u,t,X0);
 plotGraficos(tOut, yOut,'Para disdupio em degral e condiçoes inciais nulas')
-
+%3
 C=[1,0,0,0];
 rank(obsv(A,C))
 
@@ -114,3 +114,65 @@ u = (t>0)-(t>45);
 X0 = [zeros(8,1)];
 [yOut,tOut]=lsim(sys_est_cl,u,t,X0);
 plotGraficos(tOut, yOut,'Para disdupio em degral e condiçoes inciais nulas,com observador')
+
+%7
+dt=0.1;
+t = 0:dt:30;  % 201 points
+A=[ 0       , 1, 0, 0;
+    16.0976 , 0, 0, 0;
+    0       , 0, 0, 1;
+    -0.73177, 0, 0, 0]
+B=[ 0;
+    -0.1463;
+    0;
+    0.0976]
+C=[ 1, 0, 0, 0;
+    0, 0, 1, 0]
+u = (t>0);
+X0=[0;
+    0;
+    0;
+    0];
+D=0
+
+Q=C'*C
+R=1
+[yOut1,tOut]=lsim(ss(A-B*lqr(A,B,Q,R),B,C,0), u, t, X0);
+
+Q=C'*C*10
+R=1
+[yOut2,tOut]=lsim(ss(A-B*lqr(A,B,Q,R),B,C,0), u, t, X0);
+
+Q=C'*C*20
+R=1
+[yOut3,tOut]=lsim(ss(A-B*lqr(A,B,Q,R),B,C,0), u, t, X0);
+
+Q=C'*C*1000
+R=1
+[yOut4,tOut]=lsim(ss(A-B*lqr(A,B,Q,R),B,C,0), u, t, X0);
+
+figure('Name','Questao 7','NumberTitle','off');
+subplot(2,1,1);
+hold on;
+plot(t,yOut1(:,1),'--');
+plot(t,yOut2(:,1));
+plot(t,yOut3(:,1));
+plot(t,yOut4(:,1));
+hold off;
+legend('Q=C^T*C','Q=C^T*C*10','Q=C^T*C*20','Q=C^T*C*1000');
+title('Posicao angular');
+ylabel('rad');
+xlabel('s');
+grid on
+subplot(2,1,2); 
+hold on;
+plot(t,yOut1(:,2),'--');
+plot(t,yOut2(:,2));
+plot(t,yOut3(:,2));
+plot(t,yOut4(:,2));
+hold off;
+legend('Q=C^T*C','Q=C^T*C*10','Q=C^T*C*20','Q=C^T*C*1000');
+title('Posicao do carinho');
+ylabel('m');
+xlabel('s');
+grid on
