@@ -3,4 +3,3 @@ function [An,Bn,Cn]=aplicarTranformacaodeSimiliraridade(A,B,C,T)
     Bn=inv(T)*B;
     Cn=C*T;
 end
-

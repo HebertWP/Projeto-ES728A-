@@ -30,7 +30,6 @@ T=gerarMatrizDeTransposcaoCanonicaControladora(E2,A)
 Q=C'*C
 R=1
 K=lqr(A,B,Q,R)
-[P,L,K]=care(A,B,Q,R)
 Ac=A-B*K
 closeLoop=ss(A-B*K,B,C,0);
 dt=0.1;
@@ -41,8 +40,8 @@ X0=[0;
     0;
     0;
     0];
-[yOut,tOut]=lsim(closeLoop,u,t,X0);
-plotGraficos(tOut, yOut)
+[yOut,tOut]=lsim(closeLoop, u, t, X0);
+plotGraficos(tOut, yOut,'Para um degral em t=0 e condiçoes inciais nulas');
 
 u = (t>0);
 X0 = [0.1;
@@ -51,7 +50,7 @@ X0 = [0.1;
       0];
 
 [yOut,tOut]=lsim(closeLoop,u,t,X0);
-plotGraficos(tOut, yOut)
+plotGraficos(tOut, yOut,'Para um degral em t=0 e condiçoes inciais nao nulas');
 
 t = 0:dt:90;  % 201 points
 u = (t>0)-(t>45);
@@ -61,17 +60,20 @@ X0 = [0;
       0];
 
 [yOut,tOut]=lsim(closeLoop,u,t,X0);
-plotGraficos(tOut, yOut)
+plotGraficos(tOut, yOut,'Para disdupio em degral e condiçoes inciais nulas')
 
 C=[1,0,0,0];
 rank(obsv(A,C))
 
-C=[0,0,1,0];
-rank(obsv(A,C))
+Q=obsv(A,C)
+rank(Q)
+C=[0,0,1,0]
+Q=gerarMatrizObservabilidadede(A,C)
+rank(Q)
 
 rootsObserver=K*4
 
-inversaMatrizObservabilidade=[inv(obsv(A,C))]
+inversaMatrizObservabilidade=[inv(Q)]
 sizeM=size(obsv(A,C))
 sizeM=sizeM(1)
 q=[inversaMatrizObservabilidade(:,sizeM)]
