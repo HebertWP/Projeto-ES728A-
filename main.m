@@ -78,21 +78,39 @@ sizeM=size(obsv(A,C))
 sizeM=sizeM(1)
 q=[inversaMatrizObservabilidade(:,sizeM)]
 
-T=[q,A*q,A^2*q,A^3*q]
+T=gerarMatrizDeTransposcaoCanonicaObservavel(Q,A)
+Ao=inv(T)*A*T
+Bo=inv(T)*B
+Co=C*T
 
-AObservador=inv(T)*A*T
-BObservador=inv(T)*B
-CObservador=C*T
+L=acharL(rootsObserver,Q,T,Ao)
+Acc=[A-B*K   , B*K;
+     zeros(4), A-L*C]
+N=1
+Bcc=[B*N;
+     zeros([4,1])]
+Ccc = [Cc zeros(size(Cc))];
+Dcc = [0;0];
+sys_est_cl = ss(Acc,Bcc,Ccc,Dcc)
 
-polyObserver=poly(rootsObserver)
-polyObserver=flip(polyObserver)
-aux=size(polyObserver)
-polyObserver=polyObserver(1:aux(2)-1)
-polyObserver=transpose(polyObserver)
-clear aux;
-aux=size(obsv(A,C))
-lObservador=polyObserver+AObservador(:,aux(1))
+t = 0:dt:30;  % 201 points
 
-L=T*lObservador
-eig(A-L*C)
-ctrb(A',C')
+u = (t>0);
+X0 = [zeros(8,1)];
+[yOut,tOut]=lsim(sys_est_cl, u, t,X0);
+plotGraficos(tOut, yOut,'Para um degral em t=0 e condiçoes inciais nulas,com observador')
+
+u = (t>0);
+X0 = [0.1;
+      0;
+      1;
+      0;
+      zeros(4,1)];
+[yOut,tOut]=lsim(sys_est_cl,u,t,X0);
+plotGraficos(tOut, yOut,'Para um degral em t=0 e condiçoes inciais nao nulas,com observador');
+
+t = 0:dt:90;  % 201 points
+u = (t>0)-(t>45);
+X0 = [zeros(8,1)];
+[yOut,tOut]=lsim(sys_est_cl,u,t,X0);
+plotGraficos(tOut, yOut,'Para disdupio em degral e condiçoes inciais nulas,com observador')
