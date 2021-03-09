@@ -117,7 +117,7 @@ plotGraficos(tOut, yOut,'Para disdupio em degral e condiçoes inciais nulas,com 
 
 %7
 dt=0.1;
-t = 0:dt:30;  % 201 points
+t = 0:dt:90;  % 201 points
 A=[ 0       , 1, 0, 0;
     16.0976 , 0, 0, 0;
     0       , 0, 0, 1;
@@ -128,15 +128,12 @@ B=[ 0;
     0.0976]
 C=[ 1, 0, 0, 0;
     0, 0, 1, 0]
-u = (t>0);
-X0=[0;
-    0;
-    0;
-    0];
 D=0
 
 Q=C'*C
 R=1
+u = (t>0)-(t>45);
+X0 = [zeros(4,1)];
 [yOut1,tOut]=lsim(ss(A-B*lqr(A,B,Q,R),B,C,0), u, t, X0);
 
 Q=C'*C*10
